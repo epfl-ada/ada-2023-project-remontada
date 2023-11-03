@@ -48,3 +48,19 @@ def save_datas(dataset_name,datas, datas_names):
         print(f'Saving {data_name}...')
         file_name = data_name + '.pkl'
         save_pickle(data, path + file_name)
+
+def load_datas(dataset_name, datas_names):
+    """ Load a list of datas from a binary format path
+    Args:
+        dataset_name: str, name of the dataset
+        datas_names: list of datas names
+    Returns:
+        datas: list of datas
+    """
+    path = '../datas/' + dataset_name + '/pickles/'
+    datas = []
+    for data_name in datas_names:
+        print(f'Loading {data_name}...')
+        file_name = data_name + '.pkl'
+        datas.append(load_pickle(path + file_name))
+    return datas
