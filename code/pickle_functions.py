@@ -63,4 +63,4 @@ def load_datas(dataset_name, datas_names):
         print(f'Loading {data_name}...')
         file_name = data_name + '.pkl'
         datas.append(load_pickle(path + file_name))
-    return datas
+    return (*datas,)
