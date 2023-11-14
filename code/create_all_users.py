@@ -25,32 +25,10 @@ def create_all_users(df_advocate_users, df_matched_beer_users, df_rate_beer_user
     matched = deepcopy(df_matched_beer_users)
     rate_beer = deepcopy(df_rate_beer_users)
     #Drop the columns that are not needed
-    advocate = advocate[['user_id','user_name','joined','location']]
-    rate_beer = rate_beer[['user_id','user_name','joined','location']]
-    matched = matched[['ba','ba.1','ba.4','ba.5','rb','rb.1','rb.3','rb.4']]
-    #Rename the columns
-    advocate.rename(columns={'user_id': 'ba_user_id', 
-                            'user_name': 'ba_user_name',
-                            'joined': 'ba_joined',
-                            'location': 'ba_location'},
-                            inplace=True)
+    advocate = advocate[['ba_user_id','ba_user_name','ba_joined','ba_location']]
+    rate_beer = rate_beer[['rb_user_id','rb_user_name','rb_joined','rb_location']]
+    matched = matched[['ba_joined','ba_location','ba_user_id','ba_user_name','rb_joined','rb_location','rb_user_id','rb_user_name']]
 
-    matched.rename(columns={'ba': 'ba_joined',
-                            'ba.1': 'ba_location',
-                            'ba.4': 'ba_user_id',
-                            'ba.5': 'ba_user_name',
-                            'rb': 'rb_joined',
-                            'rb.1': 'rb_location',
-                            'rb.3': 'rb_user_id',
-                            'rb.4': 'rb_user_name'},
-                            inplace=True)
-    
-    rate_beer.rename(columns={'user_id': 'rb_user_id', 
-                            'user_name': 'rb_user_name',
-                            'joined': 'rb_joined',
-                            'location': 'rb_location'},
-                            inplace=True)
-    
     #Merge the dataframes
     df_dataset_users_advocate = pd.merge(advocate,matched,how='left')
     matched.rb_user_id = matched.rb_user_id.astype('int64')
