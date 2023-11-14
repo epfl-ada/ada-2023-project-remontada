@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+# -*- author : Vincent Roduit -*-
+# -*- date : 2023-11-12 -*-
+# -*- Last revision: 2023-11-14 -*-
+# -*- python version : 3.12.0 -*-
+# -*- Description: Create the dataset of all users -*-
+
+#import libraries
 import pandas as pd
 
 def read_txt(file_path):
@@ -22,5 +30,5 @@ def read_txt(file_path):
         data_list.append(entry_dict)
 
     df = pd.DataFrame(data_list)
-
+    
     return df
