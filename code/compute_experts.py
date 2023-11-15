@@ -21,7 +21,7 @@ def normalized_score(col):
 def is_expert(score, threshold=0.4):
     return score >= threshold
 
-def compute_experts_table(df_ratings):
+def compute_experts_table(df_ratings,threshold=0.4):
     df_user_ratings_per_year = df_ratings.groupby(['user_id', 'year']).size().reset_index(name='nb_ratings')
     df_ratings_stat_pivot = df_user_ratings_per_year.pivot(index='user_id', columns='year', values='nb_ratings')
     df_ratings_stat_pivot.fillna(0, inplace=True)
@@ -38,4 +38,4 @@ def filter_year_and_add_is_expert(df,YEAR,experts_table):
     experts_year=experts_table[experts_table[YEAR]==True].index
     df_this_year=df[df["year"]==YEAR]
     df_this_year["is_expert"] = df_this_year["user_id"].isin(experts_year).astype(int)
-    return df,experts_year
+    return df_this_year,experts_year
