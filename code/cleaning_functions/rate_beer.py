@@ -18,3 +18,8 @@ def clean_rb_users(df_rate_beer_users):
                             'location': 'rb_location'},
                             inplace=True)
     return df_rate_beer_users
+
+def clean_rb_ratings(df_rate_beer_ratings):
+    cols_to_clean = ['rating', 'appearance', 'aroma', 'palate', 'taste', 'overall', 'abv']
+    df_rate_beer_ratings[cols_to_clean] = df_rate_beer_ratings[cols_to_clean].apply(pd.to_numeric, errors='coerce')
+    return df_rate_beer_ratings
