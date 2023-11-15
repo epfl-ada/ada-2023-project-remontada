@@ -27,7 +27,7 @@ def compute_experts_table(df_ratings):
     df_ratings_stat_pivot.fillna(0, inplace=True)
     df_ratings_stat_pivot_score = df_ratings_stat_pivot.apply(compute_expert_score, axis=1)
     df_ratings_stat_pivot_score_norm = df_ratings_stat_pivot_score.apply(normalized_score, axis=0)
-    df_ratings_stat_pivot_expert = is_expert(df_ratings_stat_pivot_score_norm)
+    df_ratings_stat_pivot_expert = is_expert(df_ratings_stat_pivot_score_norm, threshold=0.4)
     df_reset = df_ratings_stat_pivot_expert.reset_index()
     df_melted = pd.melt(df_reset, id_vars=['user_id'], var_name='year', value_name='is_expert')
     df_ratings_stat_expert = df_user_ratings_per_year.merge(df_melted)
