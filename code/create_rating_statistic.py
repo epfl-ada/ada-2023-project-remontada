@@ -45,5 +45,5 @@ def create_ratings_stat(df_advocate_ratings,df_rate_beer_ratings, df_all_users):
     print('Concatenating dataframes...')
     ratings_stats = pd.concat([ratings_stats,ratings_stats2],axis=0)
     ratings_stats["date"]=pd.to_datetime(ratings_stats["date"],unit="s")
-    df_advocate_ratings["year"]=df_advocate_ratings["date"].dt.year
+    ratings_stats["year"]=ratings_stats["date"].dt.year
     return ratings_stats
