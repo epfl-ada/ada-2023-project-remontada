@@ -19,3 +19,8 @@ def clean_advocate_users(df_advocate_users):
                             'location': 'ba_location'},
                             inplace=True)
     return df_advocate_users
+
+def clean_advocate_ratings(df_advocate_ratings):
+    cols_to_clean = ['rating', 'appearance', 'aroma', 'palate', 'taste', 'overall', 'abv']
+    df_advocate_ratings[cols_to_clean] = df_advocate_ratings[cols_to_clean].apply(pd.to_numeric, errors='coerce')
+    return df_advocate_ratings
