@@ -21,6 +21,25 @@ def clean_advocate_users(df_advocate_users):
     return df_advocate_users
 
 def clean_advocate_ratings(df_advocate_ratings):
-    cols_to_clean = ['rating', 'appearance', 'aroma', 'palate', 'taste', 'overall', 'abv']
-    df_advocate_ratings[cols_to_clean] = df_advocate_ratings[cols_to_clean].apply(pd.to_numeric, errors='coerce')
+    cols_to_convert_float = [
+        'date',
+        'rating', 
+        'appearance', 
+        'aroma', 
+        'palate', 
+        'taste', 
+        'overall', 
+        'abv',
+    ]
+    cols_to_convert_str = [
+        'beer_name',
+        'style',
+        'brewery_name',
+        'text',
+    ]
+    cols_to_convert_int = ['beer_id','brewery_id']
+    df_advocate_ratings[cols_to_convert_float] = df_advocate_ratings[cols_to_convert_float].apply(pd.to_numeric, errors='coerce')
+    df_advocate_ratings[cols_to_convert_str] = df_advocate_ratings[cols_to_convert_str].astype(str)
+    df_advocate_ratings[cols_to_convert_int] = df_advocate_ratings[cols_to_convert_int].astype("Int64")
+    df_advocate_ratings['date'] = pd.to_datetime(pd.to_numeric(df_advocate_ratings['date']),unit='s')
     return df_advocate_ratings
