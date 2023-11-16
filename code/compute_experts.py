@@ -26,7 +26,6 @@ def compute_experts_table(df_ratings,quantile_score_expert=0.995):
     df_ratings_stat_pivot[1997]=np.zeros(df_ratings_stat_pivot.shape[0])
     df_ratings_stat_pivot = df_ratings_stat_pivot.reindex(columns=[df_ratings_stat_pivot.columns[0]] + [1997] + list(df_ratings_stat_pivot.columns[1:-1]))
     df_ratings_stat_pivot_score = df_ratings_stat_pivot.apply(compute_expert_score, axis=1)
-    print("ok")
     df_ratings_stat_pivot_expert = df_ratings_stat_pivot_score.gt(df_ratings_stat_pivot_score[df_ratings_stat_pivot_score.gt(0)].quantile(quantile_score_expert))
 
     df_reset = df_ratings_stat_pivot_expert.reset_index()
@@ -36,7 +35,7 @@ def compute_experts_table(df_ratings,quantile_score_expert=0.995):
 
 
 def filter_year_and_add_is_expert(df,YEAR,experts_table):
-    experts_year=experts_table[experts_table[YEAR]==True].index
+    experts_year=experts_table[(experts_table["year"]==2016) & (experts_table["is_expert"]==True)].user_id.values.astype(str).tolist()
     df_this_year=df[df["year"]==YEAR]
     df_this_year["is_expert"] = df_this_year["user_id"].isin(experts_year).astype(int)
     return df_this_year,experts_year
