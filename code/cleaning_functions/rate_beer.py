@@ -19,7 +19,7 @@ def clean_rb_users(df_rate_beer_users):
                             inplace=True)
     return df_rate_beer_users
 
-def clean_rb_ratings(df_rate_beer_ratings):
+def clean_rb_ratings(df_rate_beer_ratings, df_all_beers):
     cols_to_convert_float = [
         'date',
         'rating', 
@@ -36,12 +36,21 @@ def clean_rb_ratings(df_rate_beer_ratings):
         'brewery_name',
         'text',
     ]
-    cols_to_convert_name = ['ba_beer_id','ba_brewery_id']
+    cols_to_convert_name = ['beer_id','brewery_id']
     df_rate_beer_ratings[cols_to_convert_float] = df_rate_beer_ratings[cols_to_convert_float].apply(pd.to_numeric, errors='coerce')
     df_rate_beer_ratings[cols_to_convert_str] = df_rate_beer_ratings[cols_to_convert_str].astype(str)
     df_rate_beer_ratings[cols_to_convert_name] = df_rate_beer_ratings[cols_to_convert_name].astype(str).apply(lambda x: x.radd('rb_'))
     df_rate_beer_ratings['date'] = pd.to_datetime(pd.to_numeric(df_rate_beer_ratings['date']),unit='s')
-    return df_rate_beer_ratings
+    # Merge the DataFrames on the relevant columns
+    merged_df = df_rate_beer_ratings.merge(df_all_beers[['rb_beer_id', 'beer_unique_id']], left_on='beer_id', right_on='rb_beer_id', how='left')
+
+    # Replace the 'beer_id' column with the 'unique_id' column
+    merged_df['beer_id'] = merged_df['beer_unique_id']
+
+    # Drop the 'ba_beer_id' and 'unique_id' columns
+    merged_df = merged_df.drop(columns=['rb_beer_id', 'beer_unique_id'])
+    merged_df.dropna(subset=['beer_id','user_id'], inplace=True)
+    return merged_df
 
 def clean_rb_beers(df_rate_beer_beers):
     cols_to_convert_name = ['rb_beer_id','rb_brewery_id']

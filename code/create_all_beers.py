@@ -25,7 +25,7 @@ def create_all_beers(df_adv_beers, df_rb_beers, df_mb_beers):
     df_all_beers['brewery'] = df_all_beers['ba_brewery_name'].fillna(df_all_beers['rb_brewery_name'])
     df_all_beers['style'] = df_all_beers['ba_style'].fillna(df_all_beers['rb_style'])
     df_all_beers['beer_name'] = df_all_beers['ba_beer_name'].fillna(df_all_beers['rb_beer_name'])
-    df_all_beers.drop(columns=['ba_beer_id','ba_brewery_name','ba_style','ba_beer_name',
-                               'rb_beer_id','rb_brewery_name','rb_style','rb_beer_name'], inplace=True)
+    df_all_beers.drop(columns=['ba_brewery_name','ba_style','ba_beer_name'
+                               ,'rb_brewery_name','rb_style','rb_beer_name'], inplace=True)
     df_all_beers.drop_duplicates(subset=['beer_unique_id'], inplace=True)
     return df_all_beers

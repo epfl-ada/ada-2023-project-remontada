@@ -20,7 +20,7 @@ def clean_advocate_users(df_advocate_users):
                             inplace=True)
     return df_advocate_users
 
-def clean_advocate_ratings(df_advocate_ratings):
+def clean_advocate_ratings(df_advocate_ratings, df_all_beers):
     df_advocate_ratings.dropna(subset=['beer_id','user_id'], inplace=True)
     cols_to_convert_float = [
         'date',
@@ -41,10 +41,20 @@ def clean_advocate_ratings(df_advocate_ratings):
     cols_to_convert_name = ['beer_id','brewery_id']
     df_advocate_ratings[cols_to_convert_float] = df_advocate_ratings[cols_to_convert_float].apply(pd.to_numeric, errors='coerce')
     df_advocate_ratings[cols_to_convert_str] = df_advocate_ratings[cols_to_convert_str].astype(str)
-    df_advocate_ratings[cols_to_convert_name] = df_advocate_ratings[cols_to_convert_name].astype(str).apply(lambda x: x.str.radd('ba_'))
-    return df_advocate_ratings
+    df_advocate_ratings[cols_to_convert_name] = df_advocate_ratings[cols_to_convert_name].astype(str).apply(lambda x: x.radd('ba_'))
+    df_advocate_ratings['date'] = pd.to_datetime(pd.to_numeric(df_advocate_ratings['date']),unit='s')
+    # Merge the DataFrames on the relevant columns
+    merged_df = df_advocate_ratings.merge(df_all_beers[['ba_beer_id', 'beer_unique_id']], left_on='beer_id', right_on='ba_beer_id', how='left')
 
-def clean_adocate_beers(df_advocate_beers):
+    # Replace the 'beer_id' column with the 'unique_id' column
+    merged_df['beer_id'] = merged_df['beer_unique_id']
+
+    # Drop the 'ba_beer_id' and 'unique_id' columns
+    merged_df = merged_df.drop(columns=['ba_beer_id', 'beer_unique_id'])
+    merged_df.dropna(subset=['beer_id','user_id'], inplace=True)
+    return merged_df
+
+def clean_advocate_beers(df_advocate_beers):
     cols_to_convert_name = ['ba_beer_id','ba_brewery_id']
     df_advocate_beers = df_advocate_beers.add_prefix('ba_')
     df_advocate_beers.drop_duplicates(subset=['ba_beer_id','ba_brewery_id'],inplace=True)
