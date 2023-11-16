@@ -45,7 +45,7 @@ def clean_advocate_ratings(df_advocate_ratings):
     return df_advocate_ratings
 
 def clean_adocate_beers(df_advocate_beers):
-    df_advocate_beers.add_prefix('ba_')
+    df_advocate_beers = df_advocate_beers.add_prefix('ba_')
     df_advocate_beers.drop_duplicates(subset=['ba_beer_id','ba_brewery_id'],inplace=True)
     df_advocate_beers.dropna(subset=['ba_beer_id','ba_brewery_id'],inplace=True)
     return df_advocate_beers

@@ -44,7 +44,7 @@ def clean_rb_ratings(df_rate_beer_ratings):
     return df_rate_beer_ratings
 
 def clean_rb_beers(df_rate_beer_beers):
-    df_rate_beer_beers.add_prefix('rb_')
+    df_rate_beer_beers = df_rate_beer_beers.add_prefix('rb_')
     df_rate_beer_beers.drop_duplicates(subset=['rb_beer_id','rb_brewery_id'],inplace=True)
     df_rate_beer_beers.dropna(subset=['rb_beer_id','rb_brewery_id'],inplace=True)
     return df_rate_beer_beers
