@@ -40,18 +40,24 @@ def clean_mb_users(df_matched_beer_users):
     ]
     df_matched_beer_users.columns = column_names
     # convert column joined to datetime
-    df_matched_beer_users['ba_joined'] = pd.to_datetime(
-        pd.to_numeric(df_matched_beer_users['ba_joined']),
-        unit='s'
-    )
-    df_matched_beer_users['rb_joined'] = pd.to_datetime(
-        pd.to_numeric(df_matched_beer_users['rb_joined']),
-        unit='s'
-    )
+    if df_matched_beer_users['ba_joined'].dtype == 'object':
+        df_matched_beer_users['ba_joined'] = pd.to_datetime(
+        pd.to_numeric(df_matched_beer_users['ba_joined']), unit='s')
+
+    if df_matched_beer_users['rb_joined'].dtype == 'object':
+        df_matched_beer_users['rb_joined'] = pd.to_datetime(
+            pd.to_numeric(df_matched_beer_users['rb_joined']),unit='s')
+        
     return df_matched_beer_users, df_matched_beer_users_index
 
 def clean_mb_beers(matched_beer_beers):
-    """Function to clean the beers dataset from matched_beer"""
+    """Function to clean the beers dataset from matched_beer
+    Args:
+        matched_beer_beers (pandas dataframe): dataframe to clean
+    Returns:
+        matched_beer_beers (pandas dataframe): cleaned dataframe
+    """
+    #change column names
     column_names = {
         'abv': 'ba_abv', 
         'avg': 'ba_avg', 
@@ -88,8 +94,11 @@ def clean_mb_beers(matched_beer_beers):
        'sim': 'sim'
        }
     matched_beer_beers = matched_beer_beers.rename(columns=column_names)
+
+    #Convert ids columns to obtain unique ids
     cols_to_convert_name_ba = ['ba_beer_id','ba_brewery_id']
     cols_to_convert_name_rb = ['rb_beer_id','rb_brewery_id']
     matched_beer_beers[cols_to_convert_name_ba] = matched_beer_beers[cols_to_convert_name_ba].astype(str).apply(lambda x: 'ba_' + x)
     matched_beer_beers[cols_to_convert_name_rb] = matched_beer_beers[cols_to_convert_name_rb].astype(str).apply(lambda x: 'rb_' + x)
+    
     return matched_beer_beers
