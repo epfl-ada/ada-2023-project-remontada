@@ -36,9 +36,15 @@ def clean_rb_ratings(df_rate_beer_ratings):
         'brewery_name',
         'text',
     ]
-    cols_to_convert_int = ['beer_id','brewery_id']
+    cols_to_convert_name = ['beer_id','brewery_id']
     df_rate_beer_ratings[cols_to_convert_float] = df_rate_beer_ratings[cols_to_convert_float].apply(pd.to_numeric, errors='coerce')
     df_rate_beer_ratings[cols_to_convert_str] = df_rate_beer_ratings[cols_to_convert_str].astype(str)
-    df_rate_beer_ratings[cols_to_convert_int] = df_rate_beer_ratings[cols_to_convert_int].astype("Int64")
+    df_rate_beer_ratings[cols_to_convert_name] = df_rate_beer_ratings[cols_to_convert_name].astype(str).apply(lambda x: x.radd('rb_'))
     df_rate_beer_ratings['date'] = pd.to_datetime(pd.to_numeric(df_rate_beer_ratings['date']),unit='s')
     return df_rate_beer_ratings
+
+def clean_rb_beers(df_rate_beer_beers):
+    df_rate_beer_beers.add_prefix('rb_')
+    df_rate_beer_beers.drop_duplicates(subset=['rb_beer_id','rb_brewery_id'],inplace=True)
+    df_rate_beer_beers.dropna(subset=['rb_beer_id','rb_brewery_id'],inplace=True)
+    return df_rate_beer_beers
