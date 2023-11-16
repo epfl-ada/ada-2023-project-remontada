@@ -49,3 +49,6 @@ def clean_mb_users(df_matched_beer_users):
         unit='s'
     )
     return df_matched_beer_users, df_matched_beer_users_index
+
+def clean_mb_beers(matched_beer_beers):
+    return matched_beer_beers
