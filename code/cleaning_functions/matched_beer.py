@@ -88,4 +88,8 @@ def clean_mb_beers(matched_beer_beers):
        'sim': 'sim'
        }
     matched_beer_beers = matched_beer_beers.rename(columns=column_names)
+    cols_to_convert_name_ba = ['ba_beer_id','ba_brewery_id']
+    cols_to_convert_name_rb = ['rb_beer_id','rb_brewery_id']
+    matched_beer_beers[cols_to_convert_name_ba] = matched_beer_beers[cols_to_convert_name_ba].astype(str).apply(lambda x: 'ba_' + x)
+    matched_beer_beers[cols_to_convert_name_rb] = matched_beer_beers[cols_to_convert_name_rb].astype(str).apply(lambda x: 'rb_' + x)
     return matched_beer_beers

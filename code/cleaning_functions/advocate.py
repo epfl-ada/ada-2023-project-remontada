@@ -41,11 +41,13 @@ def clean_advocate_ratings(df_advocate_ratings):
     cols_to_convert_name = ['beer_id','brewery_id']
     df_advocate_ratings[cols_to_convert_float] = df_advocate_ratings[cols_to_convert_float].apply(pd.to_numeric, errors='coerce')
     df_advocate_ratings[cols_to_convert_str] = df_advocate_ratings[cols_to_convert_str].astype(str)
-    df_advocate_ratings[cols_to_convert_name] = df_advocate_ratings[cols_to_convert_name].astype(str).apply(lambda x: x.radd('ba_'))
+    df_advocate_ratings[cols_to_convert_name] = df_advocate_ratings[cols_to_convert_name].astype(str).apply(lambda x: x.str.radd('ba_'))
     return df_advocate_ratings
 
 def clean_adocate_beers(df_advocate_beers):
+    cols_to_convert_name = ['ba_beer_id','ba_brewery_id']
     df_advocate_beers = df_advocate_beers.add_prefix('ba_')
     df_advocate_beers.drop_duplicates(subset=['ba_beer_id','ba_brewery_id'],inplace=True)
     df_advocate_beers.dropna(subset=['ba_beer_id','ba_brewery_id'],inplace=True)
+    df_advocate_beers[cols_to_convert_name] = df_advocate_beers[cols_to_convert_name].astype(str).apply(lambda x: 'ba_' + x)
     return df_advocate_beers
