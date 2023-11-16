@@ -79,6 +79,7 @@ def compute_experts_table(df_ratings,quantile_score_expert=0.995):
 
 
 def filter_year_and_add_is_expert(df,YEAR,experts_table):
+
     """Filter the dataframe by year and add the column is_expert
     Args:
         df (pandas dataframe): dataframe containing the ratings
@@ -90,7 +91,9 @@ def filter_year_and_add_is_expert(df,YEAR,experts_table):
     """
 
     #filter the dataframe by year
-    experts_year=experts_table[experts_table[YEAR]==True].index
+    
+    experts_year=experts_table[(experts_table["year"]==YEAR) & (experts_table["is_expert"]==True)].user_id.values.astype(str).tolist()
+
     df_this_year=df[df["year"]==YEAR]
     df_this_year["is_expert"] = df_this_year["user_id"].isin(experts_year).astype(int)
     return df_this_year,experts_year
