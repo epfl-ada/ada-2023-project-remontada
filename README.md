@@ -3,19 +3,19 @@ There are two types of users: extensive raters and occasional raters. It is reas
 ## Research 
 1. Are there significant differences in the main ratings between experts and non-experts ? \
    a) Do experts and non-experts exhibit preferences for specific beer styles ? \
-   b) Is the distribution of ratings similar between expert and casual users?
-2. Do high volume reviewers have an outside impact on ratings on certain beer
+   b) Is the distribution of ratings similar between expert and casual users ?
+2. Do high volume reviewers have an outside impact on ratings on certain beer ?
 3. By constructing a model taking into account the difference between experts and casual raters, can we produce a model that can predict the rating of a beer ?
 ## Methods
 ### Step 1: Data-loading and filtering
-* Convert first the ``.txt`` files into ``.csv`` for readability
-* Convert and store all files into pickle format to compress datas
-* Remove duplicate IDs in user DataFrame
-* Remove rows where beer IDs, user IDs and rating are missing (other missing values are not important for now but has to be taken into consideration for further analysis)
+* Convert first the ``.txt`` files into ``.csv`` for readability.
+* Convert and store all files into pickle format to compress datas.
+* Remove duplicate IDs in user DataFrame.
+* Remove rows where beer IDs, user IDs and rating are missing (other missing values are not important for now but has to be taken into consideration for further analysis).
 * Merge the two Dataset BeerAdvocate and RatedBeer together. As there are users on both platforms, it is more relevant to take into account the ratings from both platforms for our definition of “experts”.
 ### Step 2: Inital Analyses
-* Define who is a massive rater
-In order to separate people in two group, a definition of a massive rater, called from now an "expert" has to be found. The choice was made here to consider the number of ratings per year and aggregate scores from the past 3 years with the formula:
+* Define who is a massive rater\
+ In order to separate people in two groups, a definition of a massive rater, called from now an "expert" has to be found. The choice was made here to consider the number of ratings per year and aggregate scores from the past 3 years with the formula:
 $S_{Y_j} = 2 * R_{Y_{j}} + 0.5 * R_{Y_{j-1}} + 0.25 * R_{Y_{j-2}} + 0.1 * R_{Y_{j-3}}$
 , where $R_{Y_j}$ denotes the number of ratings for the year j and $S_{Y_j}$ is the score of the user for the year j.
 * The experts are then people from the 0.995 quantile of the score calculate previously (among those who have a non-zero score i.e active users).
@@ -23,14 +23,14 @@ $S_{Y_j} = 2 * R_{Y_{j}} + 0.5 * R_{Y_{j-1}} + 0.25 * R_{Y_{j-2}} + 0.1 * R_{Y_{
 * Analyzing the distribution of ratings over the years made by an expert and non-expert.
 * Analysis of the behavior of the two categories,The purpose of this section is to analyze if the experts are more severe than the rest of the population on the global rating (column 'rating' in the DataFrame).
 * Focus on whether experts and the general population share similar preferences when it comes to rating beers. For this investigation, the beers are sorted based on the number of times they were rated. A comparison is then made between the top 10 beers for the two groups.
-* See what kind (in terms of popularity)of beer casuals and expert rate
-* Analysis on the beers styles rated by experts and casuals
-* Analysis on how their ratings differentiate (values of the ratings)
-* Analysis of the ratings for specific beers
-* Ratings at the beginning of a beer (time evolution analysis)
-* Evolution of ratings over time, impact of the experts, bis
-Try to find beers which have been rated by expert and non experts at different years in order to identify if an expert tends to influence the ratings or not
-(all the results of the analysis are in the notebook)
+* See what kind (in terms of popularity)of beer casuals and expert rate.
+* Analysis on the beers styles rated by experts and casuals.
+* Analysis on how their ratings differentiate (values of the ratings).
+* Analysis of the ratings for specific beers.
+* Ratings at the beginning of a beer (time evolution analysis).
+* Evolution of ratings over time, impact of the experts (bis). \
+  Try to find beers which have been rated by expert and non experts at different years in order to identify if an expert tends to influence the ratings or not
+(all the results of the analysis are in the notebook).
 
 
 
@@ -38,7 +38,7 @@ Try to find beers which have been rated by expert and non experts at different y
 * 11/24: Evolution of ratings over time, impact of the experts, continue analysis on low rated beers. (end)
 * 11/24 : Analyze reviews (words) used by an expert and casual. (start)
 * 11/24: Interactive map of the location of the experts. (start)
-* 01/08: Machine learning to predict the ratings of a beer (start)
+* 12/08: Machine learning to predict the ratings of a beer (start)
 * 12/08: Reviews analysis (end) + access how to display the results in an insightful way. (start)
 * 12/08: Interactive map. (end)
 * 12/08 : Building the website page with the data story. (start).
@@ -49,8 +49,8 @@ Try to find beers which have been rated by expert and non experts at different y
 * Vincent Roh : Interactive map of the location of the experts. (start)
 * Fabio Palmisano : Machine learning to predict the ratings of a beer (start)
 * Yannis Laaroussi : Analyze reviews (words) used by an expert and casual. (start)
-* Alexi Semiz : Building the website page with the data story. (start).
+* Alexi Semiz : Building the website page with the data story. (start)
 
 	 
 ## Questions for TA's
-As explained before, we merged the dataset of the two websites (beer Advocate and rate beer) in order to study the rating. However, for the other columns (i.e. appearance, aroma, taste) we noticed that the scale of the rating was different. Is it still relevant to compare the ratings of the both sites together ? Should it be better to analyze both sites separately ?
+For the expert analysis, both sites were considered, regardless of where the ratings were submitted, as the rating grades were similar for both sites. However, for milestone 3, incorporating additional grading parameters (aroma, palate) raised the necessity of treating each site separately. This was due to the differing scales of these parameters between the sites; some ranged from 1 to 10, while others ranged from 1 to 5. Despite attempts to rescale them, statistical tests revealed a significant difference. Consequently, we conclude that merging the sites is not viable, and the analysis needs to be conducted separately for each site. Is this approach relevant for the analysis with these additional parameters?
