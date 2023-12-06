@@ -21,6 +21,8 @@ def create_all_users(df_advocate_users, df_matched_beer_users, df_rate_beer_user
     Returns:
         df_datasets_users (dataframe): dataframe of all users
     """
+
+    #check if the dataframe already exists
     path = '../datas/results/'
     file = 'df_all_users.pkl'
     if os.path.exists(path+file):
@@ -34,7 +36,15 @@ def create_all_users(df_advocate_users, df_matched_beer_users, df_rate_beer_user
         #Drop the columns that are not needed
         advocate = advocate[['ba_user_id','ba_user_name','ba_joined','ba_location']]
         rate_beer = rate_beer[['rb_user_id','rb_user_name','rb_joined','rb_location']]
-        matched = matched[['ba_joined','ba_location','ba_user_id','ba_user_name','rb_joined','rb_location','rb_user_id','rb_user_name']]
+        matched = matched[['ba_joined',
+                           'ba_location',
+                           'ba_user_id',
+                           'ba_user_name',
+                           'rb_joined',
+                           'rb_location',
+                           'rb_user_id',
+                           'rb_user_name'
+                           ]]
 
         #Merge the dataframes
         df_dataset_users_advocate = pd.merge(advocate,matched,how='left')
