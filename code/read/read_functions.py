@@ -7,7 +7,6 @@
 
 #import libraries
 import pandas as pd
-import chardet
 import ftfy
 
 def read_txt(file_path):

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # -*- author : Vincent Roduit -*-
 # -*- date : 2023-11-14 -*-
-# -*- Last revision: 2023-11-14 -*-
+# -*- Last revision: 2023-12-10 (Vincent) -*-
 # -*- python version : 3.12.0 -*-
 # -*- Description: Functions to clean datasets from matched_beer -*-
 
 # Import libraries
 import pandas as pd
-import numpy as np
+from ftfy import fix_text
 
 def clean_rb_users(df_rate_beer_users):
     """Clean the rate beer users dataset
@@ -95,3 +95,40 @@ def clean_rb_beers(df_rate_beer_beers):
     df_rate_beer_beers.drop_duplicates(subset=['rb_beer_id','rb_brewery_id'],inplace=True)
      
     return df_rate_beer_beers
+
+def clean_rb_reviews(df_rate_beer_reviews):
+    """Clean the advocate reviews dataset
+    Args:
+        df_advocate_reviews (DataFrame): DataFrame containing the advocate reviews dataset
+    Returns:
+        df_advocate_reviews (DataFrame): DataFrame containing the cleaned advocate reviews dataset
+    """
+
+    #Drop rowa where text, user_id or date is missing
+    df_rate_beer_reviews.dropna(subset=['text','user_id','date'], inplace=True)
+
+    # Type conversion
+    cols_of_interest = [
+        'date',
+        'user_id',
+        'user_name',
+        'text',
+    ]
+    cols_to_convert_str = [
+        'text',
+        'user_name'
+    ]
+    cols_to_convert_int = [
+        'user_id'
+    ]
+    # Keep columns of interest and convert types
+    df_rate_beer_reviews= df_rate_beer_reviews[cols_of_interest]
+    
+    df_rate_beer_reviews[cols_to_convert_str] = df_rate_beer_reviews[cols_to_convert_str].astype(str)
+    df_rate_beer_reviews[cols_to_convert_int] = df_rate_beer_reviews[cols_to_convert_int].astype(int) 
+    df_rate_beer_reviews['date'] = pd.to_datetime(pd.to_numeric(df_rate_beer_reviews['date']),unit='s')
+
+    # Correct wrong character
+    df_rate_beer_reviews['text'] = df_rate_beer_reviews['text'].apply(lambda x: fix_text(x))
+    
+    return df_rate_beer_reviews

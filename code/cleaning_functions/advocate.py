@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # -*- author : Vincent Roduit -*-
 # -*- date : 2023-11-14 -*-
-# -*- Last revision: 2023-11-14 -*-
+# -*- Last revision: 2023-12-10 (Vincent) -*-
 # -*- python version : 3.12.0 -*-
 # -*- Description: Functions to clean datasets from matched_beer -*-
 
 # Import libraries
 import pandas as pd
 import numpy as np
+from ftfy import fix_text
 
 def clean_advocate_users(df_advocate_users):
     """Clean the advocate users dataset
@@ -59,10 +60,18 @@ def clean_advocate_ratings(df_advocate_ratings, df_all_beers):
         'brewery_name',
         'text',
     ]
-    cols_to_convert_name = ['beer_id','brewery_id']
+    cols_to_convert_bool = [
+        'review'
+    ]
+    cols_to_convert_name = [
+        'beer_id',
+        'brewery_id'
+    ]
+
     df_advocate_ratings[cols_to_convert_float] = df_advocate_ratings[cols_to_convert_float].apply(pd.to_numeric, errors='coerce')
     df_advocate_ratings[cols_to_convert_str] = df_advocate_ratings[cols_to_convert_str].astype(str)
     df_advocate_ratings[cols_to_convert_name] = df_advocate_ratings[cols_to_convert_name].astype(str).apply(lambda x: x.radd('ba_'))
+    df_advocate_ratings[cols_to_convert_bool] = df_advocate_ratings[cols_to_convert_bool].astype(bool)
     df_advocate_ratings['date'] = pd.to_datetime(pd.to_numeric(df_advocate_ratings['date']),unit='s')
 
     # Replace beer_id with unique_id from df_all_beers
@@ -95,3 +104,37 @@ def clean_advocate_beers(df_advocate_beers):
     df_advocate_beers.drop_duplicates(subset=['ba_beer_id','ba_brewery_id'],inplace=True)
     df_advocate_beers.dropna(subset=['ba_beer_id','ba_brewery_id'],inplace=True)
     return df_advocate_beers
+
+def clean_advocate_reviews(df_advocate_reviews):
+    """Clean the advocate reviews dataset
+    Args:
+        df_advocate_reviews (DataFrame): DataFrame containing the advocate reviews dataset
+    Returns:
+        df_advocate_reviews (DataFrame): DataFrame containing the cleaned advocate reviews dataset
+    """
+
+    #Drop rowa where text, user_id or date is missing
+    df_advocate_reviews.dropna(subset=['text','user_id','date'], inplace=True)
+
+    # Type conversion
+    cols_of_interest = [
+        'date',
+        'user_id',
+        'user_name',
+        'text',
+    ]
+    cols_to_convert_str = [
+        'text',
+        'user_id'
+    ]
+
+    # Keep columns of interest and convert types
+    df_advocate_reviews= df_advocate_reviews[cols_of_interest]
+    
+    df_advocate_reviews[cols_to_convert_str] = df_advocate_reviews[cols_to_convert_str].astype(str)
+    df_advocate_reviews['date'] = pd.to_datetime(pd.to_numeric(df_advocate_reviews['date']),unit='s')
+
+    # Correct wrong character
+    df_advocate_reviews['text'] = df_advocate_reviews['text'].apply(lambda x: fix_text(x))
+
+    return df_advocate_reviews
