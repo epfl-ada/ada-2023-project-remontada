@@ -16,6 +16,8 @@ from string import punctuation
 import spacy
 from collections import Counter 
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import concurrent.futures
+from tqdm import tqdm
 
 #import files
 from read.pickle_functions import load_pickle
@@ -81,9 +83,6 @@ def create_text_dataset(df_advocate_reviews,df_rate_beer_reviews, df_all_users,e
 
     return ratings_stats
 
-
-
-
 def detect_language(text):
     """ Detect the language of a text
     Args:
@@ -125,33 +124,37 @@ def lemmatize_and_filter(text,nlp):
     
     return filtered_tokens
 
-def compute_text_stats(df_texts):
+def compute_text_stats(df_texts, lemmatize=False):
     """ Compute the statitics of a text column
     Args:
         texts (Series): Texts to analyze
     Returns:
         DataFrame: DataFrame containing the statistics of the texts
     """
-    print('Detecting language...')
-    df_texts['language'] = df_texts['text'].apply(lambda x: detect_language(x))
-    print('Calculating number of words...')
-    df_texts['nb_words'] = df_texts['text'].apply(lambda x: calculate_nb_words(x))
+    # Detect the language of the texts
+    print('Detecting language and count the number of words...')
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        df_texts['language'] = list(tqdm(executor.map(detect_language_wrapper, df_texts['text']), total=len(df_texts)))
 
-    #Only keep the english texts
-    df_texts = df_texts[df_texts['language']=='en']
+        df_texts['nb_words'] = list(tqdm(executor.map(calculate_nb_words_wrapper, df_texts['text']), total=len(df_texts)))
+
+    # Only keep the English texts
+    df_texts = df_texts[df_texts['language'] == 'en']
     
-    #Compute the statistics
-    print('Lematizing..')
-    nlp = spacy.load('en_core_web_sm')
-    df_texts['tokens'] = df_texts['text'].apply(lambda x: lemmatize_and_filter(x,nlp))
-    # Compute sentiment
-    print('Computing sentiment...')
-    analyzer = SentimentIntensityAnalyzer()
-    sentiment_scores = df_texts['text'].apply(lambda x: analyze_sentiment(x, analyzer))
-    df_texts[['Neg_sentiment','Neu_sentiment','Pos_sentiment', 'Comp_sentiment']] = pd.DataFrame(sentiment_scores.tolist(), index=df_texts.index)
+    # Compute the statistics
+    if lemmatize:
+        print('Lemmatizing...')
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            df_texts['tokens'] = list(tqdm(executor.map(tokenize_texts, df_texts['text']), total=len(df_texts)))
+
+            sentiment_scores = list(tqdm(executor.map(analyze_sentiment_wrapper, df_texts['text']), total=len(df_texts)))
+
+        df_texts[['Neg_sentiment', 'Neu_sentiment', 'Pos_sentiment', 'Comp_sentiment']] = pd.DataFrame(sentiment_scores, index=df_texts.index)
+
     # Separate the experts from the others
-    df_texts_experts = df_texts[df_texts['is_expert']==1]
-    df_texts_others = df_texts[df_texts['is_expert']==0]
+    df_texts_experts = df_texts[df_texts['is_expert'] == 1]
+    df_texts_others = df_texts[df_texts['is_expert'] == 0]
+    
     return df_texts_experts, df_texts_others
 
 def compute_top_words(df):
@@ -174,3 +177,22 @@ def analyze_sentiment(text, analyzer):
     except Exception as e:
         print(f"Error analyzing sentiment for text: {text}. Error: {str(e)}")
         return None
+    
+
+def detect_language_wrapper(x):
+    return detect_language(x)
+
+def calculate_nb_words_wrapper(x):
+    return calculate_nb_words(x)
+
+def lemmatize_and_filter_wrapper(x):
+    nlp = spacy.load('en_core_web_sm')
+    return lemmatize_and_filter(x, nlp)
+
+def analyze_sentiment_wrapper(x):
+    analyzer = SentimentIntensityAnalyzer()
+    return analyze_sentiment(x, analyzer)
+
+def tokenize_texts(text):
+    nlp = spacy.load('en_core_web_sm')
+    return [token.lemma_ for token in nlp(text) if not token.is_stop]
