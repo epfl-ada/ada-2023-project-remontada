@@ -144,13 +144,9 @@ def compute_text_stats(df_texts, lemmatize=False):
     # Compute the statistics
     if lemmatize:
         print('Lemmatizing...')
+        nlp = spacy.load('en_core_web_sm')
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            df_texts['tokens'] = list(tqdm(executor.map(tokenize_texts, df_texts['text']), total=len(df_texts)))
-
-            sentiment_scores = list(tqdm(executor.map(analyze_sentiment_wrapper, df_texts['text']), total=len(df_texts)))
-
-        df_texts[['Neg_sentiment', 'Neu_sentiment', 'Pos_sentiment', 'Comp_sentiment']] = pd.DataFrame(sentiment_scores, index=df_texts.index)
-
+            df_texts['tokens'] = list(tqdm(executor.map(tokenize_texts, df_texts['text'], [nlp]*len(df_texts)), total=len(df_texts)))
     # Separate the experts from the others
     df_texts_experts = df_texts[df_texts['is_expert'] == 1]
     df_texts_others = df_texts[df_texts['is_expert'] == 0]
@@ -193,6 +189,12 @@ def analyze_sentiment_wrapper(x):
     analyzer = SentimentIntensityAnalyzer()
     return analyze_sentiment(x, analyzer)
 
-def tokenize_texts(text):
-    nlp = spacy.load('en_core_web_sm')
-    return [token.lemma_ for token in nlp(text) if not token.is_stop]
+def tokenize_texts(text,nlp):
+    doc = nlp(text)
+    
+    # Lemmatize each token and filter out stopwords and tokens in EXCLUDE_CHARS
+    filtered_tokens = [token.lemma_ for token in doc if token.lemma_ not in EXCLUDE_CHARS and not token.is_stop]
+    
+    # Remove empty strings or tokens consisting only of whitespace characters
+    filtered_tokens = [token for token in filtered_tokens if token.strip() != '']
+    return filtered_tokens
