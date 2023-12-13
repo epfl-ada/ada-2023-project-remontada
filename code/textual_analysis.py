@@ -139,6 +139,7 @@ def compute_top_words(df):
     top_words_experts = Counter([item for sublist in df['tokens'] for item in sublist])
     words_experts=pd.DataFrame(top_words_experts.most_common(20))
     words_experts.columns=['Common_words','count']
+    words_experts['count'] = words_experts['count'] / df['nb_reviews'].sum()
     words_experts.style.background_gradient(cmap='Blues')
     return words_experts
 

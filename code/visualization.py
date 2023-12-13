@@ -14,6 +14,6 @@ import pandas as pd
 def plot_top_words(top_words, title):
     plt.figure(figsize=(5,5))
     sns.barplot(x="count", hue="Common_words", data=top_words, palette="viridis")
-    plt.title(f'Most Common Words for {title}')
+    plt.title(f'Most Common Words for {title} (normalized)')
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     plt.show()
