@@ -167,19 +167,19 @@ def analyze_sentiment_wrapper(x):
     analyzer = SentimentIntensityAnalyzer()
     return analyze_sentiment(x, analyzer)
 
-def tokenize_texts(text,nlp):
+def tokenize_texts(text, nlp):
     doc = nlp(text)
     
-    # Lemmatize each token and filter out stopwords and tokens in EXCLUDE_CHARS
-    filtered_tokens = [token.lemma_ for token in doc if token.lemma_ not in EXCLUDE_CHARS and not token.is_stop]
+    # Extract each token and filter out stopwords and tokens in EXCLUDE_CHARS
+    filtered_tokens = [token.text for token in doc if token.text not in EXCLUDE_CHARS and not token.is_stop]
     
     # Remove empty strings or tokens consisting only of whitespace characters
     filtered_tokens = [token for token in filtered_tokens if token.strip() != '']
     return filtered_tokens
 
-def lemmatize(df_texts):
+def tokenize(df_texts):
     # Compute the statistics
-    print('Lemmatizing...')
+    print('Tokenizing...')
     nlp = spacy.load('en_core_web_sm')
     with concurrent.futures.ThreadPoolExecutor() as executor:
         df_texts['tokens'] = list(tqdm(executor.map(tokenize_texts, df_texts['text'], [nlp]*len(df_texts)), total=len(df_texts)))
