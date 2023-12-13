@@ -18,6 +18,7 @@ from collections import Counter
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import concurrent.futures
 from tqdm import tqdm
+from nltk import bigrams
 
 #import files
 from read.pickle_functions import load_pickle
@@ -172,10 +173,10 @@ def tokenize_texts(text, nlp):
     doc = nlp(text)
     
     # Extract each token and filter out stopwords and tokens in EXCLUDE_CHARS
-    filtered_tokens = [token.text for token in doc if token.text not in EXCLUDE_CHARS and not token.is_stop]
-    
+    filtered_tokens = [token.lemma_ for token in doc if not token.is_punct and not token.is_stop]    
     # Remove empty strings or tokens consisting only of whitespace characters
     filtered_tokens = [token for token in filtered_tokens if token.strip() != '']
+
     return filtered_tokens
 
 def tokenize(df_texts):
@@ -185,6 +186,20 @@ def tokenize(df_texts):
     with concurrent.futures.ThreadPoolExecutor() as executor:
         df_texts['tokens'] = list(tqdm(executor.map(tokenize_texts, df_texts['text'], [nlp]*len(df_texts)), total=len(df_texts)))
     return df_texts
+
+def compute_bigrams(text):
+    return list(bigrams(text))
+
+def add_bigrams(df_texts):
+    print('Computing bigrams...')
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        df_texts['bigrams'] = list(tqdm(executor.map(compute_bigrams, df_texts['tokens']), total=len(df_texts)))
+    return df_texts
+
+def compute_top_bigrams(df_texts):
+    all_bigrams = [bigram for bigrams in df_texts['bigrams'] for bigram in bigrams]
+    bigram_counts = Counter(all_bigrams)
+    return bigram_counts
 
 def sentiment(df_texts):
     # Compute the statistics
