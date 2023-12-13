@@ -7,28 +7,31 @@
 
 #import libraries
 import pandas as pd
+import ftfy
 
 def read_txt(file_path):
-    data_list = []
-    with open(file_path, 'r') as file:
-        file_content = file.read()
+    """Reads a text file and returns a DataFrame with the extracted parameters
+    Args:
+        file_path (str): Path to the text file
+    Returns:
+        DataFrame: DataFrame with the extracted parameters
+    """
+    with open(file_path, 'rb') as file:
+        raw_data = file.read()
 
-    entries = file_content.split('\n\n')
+    sections = raw_data.split(b'\n\n')
 
-    for entry in entries:
+    extracted_data = []
 
-        entry_dict = {}
-        entry_lines = entry.strip().split('\n')
-        
-        for line in entry_lines:
+    for section in sections:
+        # Extract parameters
+        parameters = {}
+        for line in section.decode('utf-8').split('\n'):
+            if ':' in line:
+                key, value = map(str.strip, line.split(':', 1))
 
-            parts = line.strip().split(':')
-            if len(parts) == 2:
-                column, value = parts[0].strip(), parts[1].strip()
-                entry_dict[column] = value
+                parameters[key] = ftfy.fix_text(value)
 
-        data_list.append(entry_dict)
+        extracted_data.append(parameters)
 
-    df = pd.DataFrame(data_list)
-    
-    return df
+    return pd.DataFrame(extracted_data)
