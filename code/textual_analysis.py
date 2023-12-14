@@ -35,7 +35,7 @@ def create_text_dataset(df_advocate_reviews,df_rate_beer_reviews, df_all_users,e
     Returns:
         ratings_stats (dataframe): dataframe of rating statistic of all users
     """
-    path = '../datas/results/'
+    path = '../datas/processed/'
     file = 'df_text_stats.pkl'
     if os.path.exists(path+file):
         print('Loading the dataframe in pickle format from ',path)
@@ -120,29 +120,63 @@ def compute_text_stats(df_texts):
     Returns:
         DataFrame: DataFrame containing the statistics of the texts
     """
-    # Detect the language of the texts
-    print('Detecting language and count the number of words...')
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        df_texts['language'] = list(tqdm(executor.map(detect_language_wrapper, df_texts['text']), total=len(df_texts)))
+    df_texts_expert,df_texts_casual = None, None
+    if os.path.exists('../datas/processed/df_texts_expert.pkl'):
+        print('Loading the dataframe in pickle format from ../datas/processed/')
+        df_texts_expert = load_pickle('../datas/processed/df_texts_expert.pkl')
+    if os.path.exists('../datas/processed/df_texts_casual.pkl'):
+        print('Loading the dataframe in pickle format from ../datas/processed/')
+        df_texts_casual = load_pickle('../datas/processed/df_texts_casual.pkl')
+    if df_texts_casual is None or df_texts_expert is None:
+        # Detect the language of the texts
+        df_texts.text = df_texts.text.str.lower()
+        print('Detecting language and count the number of words...')
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            df_texts['language'] = list(tqdm(executor.map(detect_language_wrapper, df_texts['text']), total=len(df_texts)))
 
-        df_texts['nb_words'] = list(tqdm(executor.map(calculate_nb_words_wrapper, df_texts['text']), total=len(df_texts)))
+            df_texts['nb_words'] = list(tqdm(executor.map(calculate_nb_words_wrapper, df_texts['text']), total=len(df_texts)))
 
-    # Only keep the English texts
-    df_texts = df_texts[df_texts['language'] == 'en']
+        # Only keep the English texts
+        df_texts = df_texts[df_texts['language'] == 'en']
 
-    # Separate the experts from the others
-    df_texts_experts = df_texts[df_texts['is_expert'] == 1]
-    df_texts_others = df_texts[df_texts['is_expert'] == 0]
+        # Separate the experts from the others
+        df_texts_expert = df_texts[df_texts['is_expert'] == 1]
+        df_texts_casual = df_texts[df_texts['is_expert'] == 0]
+
+        df_texts_casual = df_texts_casual.sample(len(df_texts_expert), random_state=42)
+
+        # Add number of reviews
+        df_texts_expert['nb_reviews'] = df_texts_expert.groupby('user_id')['user_id'].transform('size')
+        df_texts_casual['nb_reviews'] = df_texts_casual.groupby('user_id')['user_id'].transform('size')
+
+        df_texts_expert = tokenize(df_texts_expert)
+        df_texts_casual = tokenize(df_texts_casual)
+
+        df_texts_expert = add_bigrams(df_texts_expert)
+        df_texts_casual = add_bigrams(df_texts_casual)
     
-    return df_texts_experts, df_texts_others
+    return df_texts_expert, df_texts_expert
 
-def compute_top_words(df):
-    top_words_experts = Counter([item for sublist in df['tokens'] for item in sublist])
-    words_experts=pd.DataFrame(top_words_experts.most_common(20))
-    words_experts.columns=['Common_words','count']
-    words_experts['count'] = words_experts['count'] / df['nb_reviews'].sum()
-    words_experts.style.background_gradient(cmap='Blues')
-    return words_experts
+def compute_top_words_adjectives(df):
+    nlp = spacy.load('en_core_web_sm')
+    words = Counter([item for sublist in tqdm(df['tokens'], desc="Processing tokens") for item in sublist])
+    top_words = pd.DataFrame(words.most_common())
+    top_words.columns=['common_words','count_words']
+    top_words['count_words'] = top_words['count_words'] / df['nb_reviews'].sum()
+    top_words.sort_values(by=['count_words'], inplace=True, ascending=False)
+
+    adj = []
+    count_adj = []
+    for top_word,count_word in zip(top_words['common_words'],top_words['count_words']):
+        if nlp(top_word)[0].pos_ == 'ADJ':
+            adj.append(top_word)
+            count_adj.append(count_word)
+        if len(adj) == 20:
+            break
+    top_words = top_words[:20]
+    top_words['common_adj'] = adj
+    top_words['count_adj'] = count_adj
+    return top_words
 
 def analyze_sentiment(text, analyzer):
     """ Analyze the sentiment of a text
