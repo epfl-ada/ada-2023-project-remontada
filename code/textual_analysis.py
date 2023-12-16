@@ -155,7 +155,7 @@ def compute_text_stats(df_texts):
         df_texts_expert = add_bigrams(df_texts_expert)
         df_texts_casual = add_bigrams(df_texts_casual)
     
-    return df_texts_expert, df_texts_expert
+    return df_texts_expert, df_texts_casual
 
 def compute_top_words_adjectives(df):
     nlp = spacy.load('en_core_web_sm')
@@ -235,11 +235,20 @@ def compute_top_bigrams(df_texts):
     bigram_counts = Counter(all_bigrams)
     return bigram_counts
 
-def sentiment(df_texts):
+def sentiment(df_texts_casual_sentiment, df_texts_expert_sentiment):
     # Compute the statistics
+    if os.path.exists('../datas/processed/df_texts_casual_sentiment.pkl') and os.path.exists('../datas/processed/df_texts_expert_sentiment.pkl'):
+        print('Loading the dataframe in pickle format from ../datas/processed/')
+        df_texts_casual_sentiment = load_pickle('../datas/processed/df_texts_casual_sentiment.pkl')
+        df_texts_expert_sentiment = load_pickle('../datas/processed/df_texts_expert_sentiment.pkl')
     print('Analyzing sentiment...')
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        df_texts['sentiment'] = list(tqdm(executor.map(analyze_sentiment_wrapper, df_texts['text']), total=len(df_texts)))
-        # Extract sentiment scores into separate columns
-        df_texts[['Neg_sentiment', 'Neu_sentiment', 'Pos_sentiment', 'Comp_sentiment']] = pd.DataFrame(df_texts['sentiment'].tolist(), index=df_texts.index)
-    return df_texts
+    else:
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            df_texts_casual_sentiment['sentiment'] = list(tqdm(executor.map(analyze_sentiment_wrapper, df_texts_casual_sentiment['text']), total=len(df_texts_casual_sentiment)))
+            # Extract sentiment scores into separate columns
+            df_texts_casual_sentiment[['Neg_sentiment', 'Neu_sentiment', 'Pos_sentiment', 'Comp_sentiment']] = pd.DataFrame(df_texts_casual_sentiment['sentiment'].tolist(), index=df_texts_casual_sentiment.index)
+
+            df_texts_expert_sentiment['sentiment'] = list(tqdm(executor.map(analyze_sentiment_wrapper, df_texts_expert_sentiment['text']), total=len(df_texts_expert_sentiment)))
+            # Extract sentiment scores into separate columns
+            df_texts_expert_sentiment[['Neg_sentiment', 'Neu_sentiment', 'Pos_sentiment', 'Comp_sentiment']] = pd.DataFrame(df_texts_expert_sentiment['sentiment'].tolist(), index=df_texts_expert_sentiment.index)
+    return df_texts_casual_sentiment, df_texts_expert_sentiment
