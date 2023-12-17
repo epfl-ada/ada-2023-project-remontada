@@ -217,10 +217,9 @@ def compute_top_words_tfidf(docs, topk=20):
             if len(adjs) < topk:
                 adjs.append(word)
                 adjs_score.append(tfidf)
-        else:
-            if len(words) < topk:
-                words.append(word)
-                words_score.append(tfidf)
+        if len(words) < topk:
+            words.append(word)
+            words_score.append(tfidf)
         if len(words) == topk and len(adjs) == topk:
             break
     
