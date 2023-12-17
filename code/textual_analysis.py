@@ -11,6 +11,7 @@ from langdetect import DetectorFactory
 DetectorFactory.seed = 0
 import pandas as pd
 import os
+import numpy as np
 from copy import deepcopy
 from string import punctuation
 import spacy
@@ -19,6 +20,8 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import concurrent.futures
 from tqdm import tqdm
 from nltk import bigrams
+from sklearn.feature_extraction.text import TfidfVectorizer
+from joblib import Parallel, delayed
 
 #import files
 from read.pickle_functions import load_pickle
@@ -178,6 +181,55 @@ def compute_top_words_adjectives(df):
     top_words['count_adj'] = count_adj
     return top_words
 
+def compute_top_words_tfidf(docs, topk=20):
+    """
+    Retrieve the top k words based on TF-IDF scores.
+    Args:
+        docs (list): List of documents
+        topk (int): Number of top words to return
+
+    Returns:
+    """
+    nlp = spacy.load('en_core_web_sm')
+
+    vectorizer = TfidfVectorizer(use_idf=True, smooth_idf=True)
+    tfidf_matrix = vectorizer.fit_transform(docs)
+
+    # Get the feature names (words)
+    feature_names = np.array(vectorizer.get_feature_names_out())
+
+    # Calculate the mean TF-IDF score for each word
+    mean_tfidf_scores = np.array(tfidf_matrix.mean(axis=0)).flatten()
+
+    # Create a list of (word, mean TF-IDF score) tuples
+    word_tfidf_list = list(zip(feature_names, mean_tfidf_scores))
+
+    # Sort the list based on TF-IDF scores in descending order
+    word_tfidf_list.sort(key=lambda x: x[1], reverse=True)
+
+    words = []
+    words_score = []
+    adjs = []
+    adjs_score = []
+
+    for word, tfidf in word_tfidf_list:
+        if nlp(word)[0].pos_ == 'ADJ':
+            if len(adjs) < topk:
+                adjs.append(word)
+                adjs_score.append(tfidf)
+        else:
+            if len(words) < topk:
+                words.append(word)
+                words_score.append(tfidf)
+        if len(words) == topk and len(adjs) == topk:
+            break
+    
+    word_tfidf_list = pd.DataFrame({'words':words,'words_score':words_score,'adjs':adjs,'adjs_score':adjs_score})
+
+    return word_tfidf_list
+
+
+
 def analyze_sentiment(text, analyzer):
     """ Analyze the sentiment of a text
     Args:
@@ -241,8 +293,8 @@ def sentiment(df_texts_casual_sentiment, df_texts_expert_sentiment):
         print('Loading the dataframe in pickle format from ../datas/processed/')
         df_texts_casual_sentiment = load_pickle('../datas/processed/df_texts_casual_sentiment.pkl')
         df_texts_expert_sentiment = load_pickle('../datas/processed/df_texts_expert_sentiment.pkl')
-    print('Analyzing sentiment...')
     else:
+        print('Analyzing sentiment...')
         with concurrent.futures.ThreadPoolExecutor() as executor:
             df_texts_casual_sentiment['sentiment'] = list(tqdm(executor.map(analyze_sentiment_wrapper, df_texts_casual_sentiment['text']), total=len(df_texts_casual_sentiment)))
             # Extract sentiment scores into separate columns
