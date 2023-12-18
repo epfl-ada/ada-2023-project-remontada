@@ -12,7 +12,7 @@ from copy import deepcopy
 import pandas as pd
 from read.pickle_functions import load_pickle
 
-def create_ratings_stat(df_advocate_ratings,df_rate_beer_ratings, df_all_users):
+def create_ratings_stat(df_advocate_ratings,df_rate_beer_ratings, df_all_users,read_pickle_if_exists=True):
     """Create the dataset of rating statistic of all users
     Args:
         df_advocate_ratings (dataframe): dataframe of advocate ratings
@@ -23,7 +23,7 @@ def create_ratings_stat(df_advocate_ratings,df_rate_beer_ratings, df_all_users):
     """
     path = '../datas/results/'
     file = 'df_ratings_stat.pkl'
-    if os.path.exists(path+file):
+    if os.path.exists(path+file) and read_pickle_if_exists:
         print('Loading the dataframe in pickle format from ',path)
         ratings_stats = load_pickle(path+file)
     else:
@@ -50,7 +50,9 @@ def create_ratings_stat(df_advocate_ratings,df_rate_beer_ratings, df_all_users):
 
         #Concatenate the dataframes
         print('Concatenating dataframes...')
-        ratings_stats = pd.concat([ratings_stats,ratings_stats2],axis=0)
+        ratings_stats = pd.concat([ratings_stats,ratings_stats2],axis=0,keys=['ba','rb'])
+        ratings_stats.reset_index(level=0,inplace=True)
+        ratings_stats.rename(columns={'level_0': 'source'}, inplace=True)
 
         ratings_stats["year"]=ratings_stats["date"].dt.year
     return ratings_stats
