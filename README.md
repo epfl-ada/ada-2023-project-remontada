@@ -13,7 +13,7 @@ There are two types of users: extensive raters and occasional raters. It is reas
 ## Methods
 ### Step 1: Data-loading and filtering
 * Convert first the ``.txt`` files into ``.csv`` for readability.
-* Convert and store all files into pickle format to compress datas.
+* Convert and store all files into pickle format to compress data.
 * Remove duplicate IDs in user DataFrame.
 * Remove rows where beer IDs, user IDs and rating are missing (other missing values are not important for now but has to be taken into consideration for further analysis).
 * Merge the two Dataset BeerAdvocate and RatedBeer together. As there are users on both platforms, it is more relevant to take into account the ratings from both platforms for our definition of “experts”.

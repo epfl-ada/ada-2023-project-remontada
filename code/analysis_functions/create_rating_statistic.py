@@ -21,7 +21,7 @@ def create_ratings_stat(df_advocate_ratings,df_rate_beer_ratings, df_all_users,r
     Returns:
         ratings_stats (dataframe): dataframe of rating statistic of all users
     """
-    path = '../datas/results/'
+    path = '../data/results/'
     file = 'df_ratings_stat.pkl'
     if os.path.exists(path+file) and read_pickle_if_exists:
         print('Loading the dataframe in pickle format from ',path)

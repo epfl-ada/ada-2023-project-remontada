@@ -23,7 +23,7 @@ def create_all_users(df_advocate_users, df_matched_beer_users, df_rate_beer_user
     """
 
     #check if the dataframe already exists
-    path = '../datas/results/'
+    path = '../data/results/'
     file = 'df_all_users.pkl'
     if os.path.exists(path+file):
         print('Loading the dataframe in pickle format from ',path)

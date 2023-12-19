@@ -38,7 +38,7 @@ def create_text_dataset(df_advocate_reviews,df_rate_beer_reviews, df_all_users,e
     Returns:
         ratings_stats (dataframe): dataframe of rating statistic of all users
     """
-    path = '../datas/processed/'
+    path = '../data/processed/'
     file = 'df_text_stats.pkl'
     if os.path.exists(path+file):
         print('Loading the dataframe in pickle format from ',path)
@@ -124,12 +124,12 @@ def compute_text_stats(df_texts):
         DataFrame: DataFrame containing the statistics of the texts
     """
     df_texts_expert,df_texts_casual = None, None
-    if os.path.exists('../datas/processed/df_texts_expert.pkl'):
-        print('Loading the dataframe in pickle format from ../datas/processed/')
-        df_texts_expert = load_pickle('../datas/processed/df_texts_expert.pkl')
-    if os.path.exists('../datas/processed/df_texts_casual.pkl'):
-        print('Loading the dataframe in pickle format from ../datas/processed/')
-        df_texts_casual = load_pickle('../datas/processed/df_texts_casual.pkl')
+    if os.path.exists('../data/processed/df_texts_expert.pkl'):
+        print('Loading the dataframe in pickle format from ../data/processed/')
+        df_texts_expert = load_pickle('../data/processed/df_texts_expert.pkl')
+    if os.path.exists('../data/processed/df_texts_casual.pkl'):
+        print('Loading the dataframe in pickle format from ../data/processed/')
+        df_texts_casual = load_pickle('../data/processed/df_texts_casual.pkl')
     if df_texts_casual is None or df_texts_expert is None:
         # Detect the language of the texts
         df_texts.text = df_texts.text.str.lower()
@@ -288,10 +288,10 @@ def compute_top_bigrams(df_texts):
 
 def sentiment(df_texts_casual_sentiment, df_texts_expert_sentiment):
     # Compute the statistics
-    if os.path.exists('../datas/processed/df_texts_casual_sentiment.pkl') and os.path.exists('../datas/processed/df_texts_expert_sentiment.pkl'):
-        print('Loading the dataframe in pickle format from ../datas/processed/')
-        df_texts_casual_sentiment = load_pickle('../datas/processed/df_texts_casual_sentiment.pkl')
-        df_texts_expert_sentiment = load_pickle('../datas/processed/df_texts_expert_sentiment.pkl')
+    if os.path.exists('../data/processed/df_texts_casual_sentiment.pkl') and os.path.exists('../data/processed/df_texts_expert_sentiment.pkl'):
+        print('Loading the dataframe in pickle format from ../data/processed/')
+        df_texts_casual_sentiment = load_pickle('../data/processed/df_texts_casual_sentiment.pkl')
+        df_texts_expert_sentiment = load_pickle('../data/processed/df_texts_expert_sentiment.pkl')
     else:
         print('Analyzing sentiment...')
         with concurrent.futures.ThreadPoolExecutor() as executor:

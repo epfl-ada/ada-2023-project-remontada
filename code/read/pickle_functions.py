@@ -3,7 +3,7 @@
 # -*- date : 2023-11-03 -*-
 # -*- Last revision: 2023-11-03 -*-
 # -*- python version : 3.9.13 -*-
-# -*- Description: Functions used to save and load pickle datas -*-
+# -*- Description: Functions used to save and load pickle data -*-
 
 #import libraries
 import os
@@ -34,36 +34,36 @@ def load_pickle(file_path):
     with open(file_path, 'rb') as file:
         return pickle.load(file)
     
-def save_datas(dataset_name,datas, datas_names):
-    """ Save a list of datas in a binary format
+def save_data(dataset_name,data, datas_names):
+    """ Save a list of data in a binary format
 
     Args:
         dataset_name: str, name of the dataset
-        datas: list of datas to save
-        datas_names: list of datas names
+        data: list of data to save
+        datas_names: list of data names
     """
-    path = '../datas/' + dataset_name + '/pickles/'
+    path = '../data/' + dataset_name + '/pickles/'
     if not os.path.exists(path):
         os.makedirs(path)
-    for data, data_name in zip(datas, datas_names):
+    for data, data_name in zip(data, datas_names):
         print(f'Saving {data_name}...')
         file_name = data_name + '.pkl'
         save_pickle(data, path + file_name)
 
-def load_datas(dataset_name, datas_names):
-    """ Load a list of datas from a binary format path
+def load_data(dataset_name, datas_names):
+    """ Load a list of data from a binary format path
 
     Args:
         dataset_name: str, name of the dataset
-        datas_names: list of datas names
+        datas_names: list of data names
         
     Returns:
-        datas: list of datas
+        data: list of data
     """
-    path = '../datas/' + dataset_name + '/pickles/'
-    datas = []
+    path = '../data/' + dataset_name + '/pickles/'
+    data = []
     for data_name in datas_names:
         print(f'Loading {data_name}...')
         file_name = data_name + '.pkl'
-        datas.append(load_pickle(path + file_name))
-    return (*datas,)
+        data.append(load_pickle(path + file_name))
+    return (*data,)
