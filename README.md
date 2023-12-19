@@ -23,7 +23,7 @@ CS-401: Applied Data Analysis
 - [Contributors](#contributors)
 
 ## Abstract
-There are two types of users: extensive raters and occasional raters. It is reasonable to question whether this difference has an impact on the ratings. These extensive raters could be some kind of experts, such as people working in a brewery, but they can also be beer enthusiasts without professional skills. As a beer company releasing a new product, the following question may arise: *Should the company pay more attention to reviews made by experts?* To answer this question, analyses of the ratings statistics have to be done to find if the experts have an impact on the ratings. The analysis is first focused on finding relevant differences that can assess whether the difference between the two classes is significant. Secondly, the analysis is focused on more precise questions to understand if extensive raters are responsible for the success of a beer or not. Finally, this notebook will highlight why it could be interesting to look at this cluster of people.
+There are two types of users: extensive and occasional raters. It is reasonable to question whether this difference has an impact on the ratings. These extensive raters could be some kind of experts, such as people working in a brewery, but they can also be beer enthusiasts without professional skills. As a beer company releasing a new product, the following question may arise: *Should the company pay more attention to reviews made by experts?* To answer this question, analyses of the ratings statistics have to be done to find if the experts have an impact on the ratings. The analysis is first focused on finding relevant differences that can assess whether the difference between the two classes is significant. Secondly, the analysis is focused on more precise questions to understand if extensive raters are responsible for the success of a beer or not. Finally, this notebook will highlight why it could be interesting to look at this cluster of people.
 
 ## Project structure
 ```
@@ -50,7 +50,7 @@ There are two types of users: extensive raters and occasional raters. It is reas
     ├── learning_attitudes.pdf
     └── logo-epfl.png
 ```
-The folder code contains all the files that produce the plots presented on the website. The Jupyter notebook main.ipynb summarizes all the steps that lead to the analysis.
+The folder *code* contains all the files that produce the plots presented on the website. The Jupyter notebook **main.ipynb** summarizes all the steps that lead to the analysis.
 
 ## Data Structure
 In order to use the code efficiently, the following structure is recommended:
@@ -105,7 +105,7 @@ In order to use the code efficiently, the following structure is recommended:
 * Remove rows where beer IDs, user IDs, and rating are missing.
 * Merge the two Datasets BeerAdvocate and RatedBeer together. As there are users on both platforms, it is more relevant to take into account the ratings from both platforms for the definition of “experts”.
 ### Step 2: Initial Analyses
-After looking at the distribution of ratings, it is legit to separate users into two classes.
+After looking at the distribution of ratings, it is legit to separate users into two classes. The following steps are then performed
 * Define who is a massive rater\
  In order to separate people into two groups, a definition of a massive rater, called from now an "expert" has to be found. The choice was made here to consider the number of ratings per year and aggregate scores from the past 3 years with the formula:
 $S_{Y_j} = 2 * R_{Y_{j}} + 0.5 * R_{Y_{j-1}} + 0.25 * R_{Y_{j-2}} + 0.1 * R_{Y_{j-3}}$
