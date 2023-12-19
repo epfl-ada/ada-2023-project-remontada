@@ -15,6 +15,7 @@ CS-401: Applied Data Analysis
 
 - [Abstract](#abstract)
 - [Project Structure](#project-structure)
+- [Data Structure](#data-structure)
 - [Research](#research)
 - [Methods](#methods)
 - [Timeline](#timeline)
@@ -50,7 +51,45 @@ There are two types of users: extensive raters and occasional raters. It is reas
     └── logo-epfl.png
 ```
 The folder code contains all the files that produce the plots presented on the website. The Jupyter notebook main.ipynb summarizes all the steps that lead to the analysis.
- 
+
+## Data Structure
+In order to use the code efficiently, the following structure is recommended:
+```
+.
+├── BeerAdvocate
+│   ├── beers.csv
+│   ├── breweries.csv
+│   ├── pickles
+│   │   ├── df_advocate_beers.pkl
+│   │   └──  ...
+│   ├── ratings.txt
+│   ├── reviews.txt
+│   ├── users.csv
+├── RateBeer
+│   ├── beers.csv
+│   ├── breweries.csv
+│   ├── pickles
+│   │   ├── df_rate_beer_beers.pkl
+│   │   └──  ...
+│   ├── ratings.txt
+│   ├── reviews.txt
+│   ├── users.csv
+└──  matched_beer_data
+    ├── beers.csv
+    ├── breweries.csv
+    ├── pickles
+    │   ├── df_matched_beer_beers.pkl
+    │   └──  ...
+    ├── ratings.csv
+    ├── ratings_ba.txt
+    ├── ratings_rb.txt
+    ├── ratings_with_text_ba.txt
+    ├── ratings_with_text_rb.txt
+    ├── users.csv
+    └── users_approx.csv
+
+```
+
 ## Research 
 1. Are there significant differences in the main ratings between experts and non-experts ? \
    a) Do experts and non-experts exhibit preferences for specific beer styles ? \
