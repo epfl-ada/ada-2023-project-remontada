@@ -6,7 +6,7 @@
 Ecole Polytechnique Fédérale de Lausanne
 </div> 
 <div align="center">
-EE-442: Wireless Receivers: Algorithms and Architectures
+CS-401: Applied Data Analysis
 </div> 
 
 # Find a catchy title
@@ -17,6 +17,8 @@ EE-442: Wireless Receivers: Algorithms and Architectures
 - [Project Structure](#project-structure)
 - [Research](#research)
 - [Methods](#methods)
+- [Timeline](#timeline)
+- [Organization within the team](organization-within-the-team)
 - [Contributors](#contributors)
 
 ## Abstract
@@ -83,25 +85,22 @@ $S_{Y_j} = 2 * R_{Y_{j}} + 0.5 * R_{Y_{j-1}} + 0.25 * R_{Y_{j-2}} + 0.1 * R_{Y_{
 * Evolution of ratings over time, impact of the experts (bis). \
   Try to find beers which have been rated by expert and non experts at different years in order to identify if an expert tends to influence the ratings or not
 (all the results of the analysis are in the notebook).
-
-
-
+* Impact of experts at the beginning of a beer
+### Step 4: Textual analysis
+* Compare the length of the reviews done for both classes.
+* Using TF-IDF aproach, compare the most common words an adjectives used by the two classes.
+* Compare the sentiment of the two reviews.
 ## Timeline:
-* 11/24: Evolution of ratings over time, impact of the experts, continue analysis on low rated beers. (end)
-* 11/24 : Analyze reviews (words) used by an expert and casual. (start)
-* 11/24: Interactive map of the location of the experts. (start)
-* 12/08: Machine learning to predict the ratings of a beer (start)
-* 12/08: Reviews analysis (end) + access how to display the results in an insightful way. (start)
-* 12/08: Interactive map. (end)
-* 12/08 : Building the website page with the data story. (start).
-* 12/15 Machine learning to predict the ratings of a beer (end)
-* 12/21 Finish the website, clean the code and share our data story
-## Organization within the team, for the milestone 3 we decided to split the work as follows :
-* Vincent Roduit :  Evolution of ratings over time, impact of the experts, continue analysis on low rated beers. (end)
-* Vincent Roh : Interactive map of the location of the experts. (start)
-* Fabio Palmisano : Machine learning to predict the ratings of a beer (start)
-* Yannis Laaroussi : Analyze reviews (words) used by an expert and casual. (start)
-* Alexi Semiz : Building the website page with the data story. (start)
- 
+* 11/24: Evolution of ratings over time, impact of the experts, continue analysis on low rated beers.
+* 11/24 : Analyze reviews (words) used by an expert and casual.
+* 12/05 : Sentiment analysis
+* 12/12: Interactive plots for rating differences and ratings count for top16 most rated beers.
+* 12/15 : Website page with the data story.
+## Organization within the team
+* Vincent Roduit :  Data processing, textual analysis
+* Vincent Roh : Ratings analysis and Webstite
+* Fabio Palmisano : Ratings analysis and Webstite
+* Yannis Laaroussi : Textual analysis and Website
+* Alexi Semiz : Interactive plots and ratings analysis
 ## Contributors
 This project has been done by Vincent Roduit, Alexi Semiz, Yannis Laaroussi, Vincent Roh and Fabio Palmisano as a mandatory part of the course "CS-401: Applied Data Analysis" given at Ecole Polytechnique Fédérale de Lausanne during the Fall semester of 2023.
