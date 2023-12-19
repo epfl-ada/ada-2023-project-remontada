@@ -138,7 +138,7 @@ $S_{Y_j} = 2 * R_{Y_{j}} + 0.5 * R_{Y_{j-1}} + 0.25 * R_{Y_{j-2}} + 0.1 * R_{Y_{
 ## Organization within the team
 * Vincent Roduit :  Data processing, textual analysis
 * Vincent Roh : Ratings analysis and Webstite
-* Fabio Palmisano : Ratings analysis and Webstite
+* Fabio Palmisano : Ratings analysis and Website
 * Yannis Laaroussi : Textual analysis and Website
 * Alexi Semiz : Interactive plots and ratings analysis
 ## Contributors
