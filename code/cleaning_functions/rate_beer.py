@@ -9,6 +9,7 @@
 import pandas as pd
 from ftfy import fix_text
 
+
 def clean_rb_users(df_rate_beer_users):
     """Clean the rate beer users dataset
     Args:
@@ -16,19 +17,23 @@ def clean_rb_users(df_rate_beer_users):
     Returns:
         df_rate_beer_users (DataFrame): DataFrame containing the cleaned rate beer users dataset
     """
-    #convert joined to datetime
-    if df_rate_beer_users['joined'].dtype != 'datetime64[ns]':
-        df_rate_beer_users['joined'] = pd.to_datetime(pd.to_numeric(df_rate_beer_users['joined']),unit='s')
-    #drop duplicates user_id
-    df_rate_beer_users.drop_duplicates(subset = 'user_id', inplace = True)
-    #rename columns
+    # convert joined to datetime
+    if df_rate_beer_users["joined"].dtype != "datetime64[ns]":
+        df_rate_beer_users["joined"] = pd.to_datetime(
+            pd.to_numeric(df_rate_beer_users["joined"]), unit="s"
+        )
+    # drop duplicates user_id
+    df_rate_beer_users.drop_duplicates(subset="user_id", inplace=True)
+    # rename columns
     cols_to_rename = {
-        'user_id': 'rb_user_id', 
-        'user_name': 'rb_user_name',
-        'joined': 'rb_joined',
-        'location': 'rb_location'}
-    df_rate_beer_users.rename(columns=cols_to_rename,inplace=True)
+        "user_id": "rb_user_id",
+        "user_name": "rb_user_name",
+        "joined": "rb_joined",
+        "location": "rb_location",
+    }
+    df_rate_beer_users.rename(columns=cols_to_rename, inplace=True)
     return df_rate_beer_users
+
 
 def clean_rb_ratings(df_rate_beer_ratings, df_all_beers):
     """Clean the rate beer ratings dataset
@@ -40,41 +45,56 @@ def clean_rb_ratings(df_rate_beer_ratings, df_all_beers):
     """
     # Type conversion
     cols_to_convert_float = [
-        'date',
-        'rating', 
-        'appearance', 
-        'aroma', 
-        'palate', 
-        'taste', 
-        'overall', 
-        'abv',
+        "date",
+        "rating",
+        "appearance",
+        "aroma",
+        "palate",
+        "taste",
+        "overall",
+        "abv",
     ]
     cols_to_convert_str = [
-        'beer_name',
-        'style',
-        'brewery_name',
-        'text',
+        "beer_name",
+        "style",
+        "brewery_name",
+        "text",
     ]
-    cols_to_convert_name = ['beer_id','brewery_id']
-    df_rate_beer_ratings[cols_to_convert_float] = df_rate_beer_ratings[cols_to_convert_float].apply(pd.to_numeric, errors='coerce')
-    df_rate_beer_ratings[cols_to_convert_str] = df_rate_beer_ratings[cols_to_convert_str].astype(str)
-    df_rate_beer_ratings[cols_to_convert_name] = df_rate_beer_ratings[cols_to_convert_name].astype(str).apply(lambda x: x.radd('rb_'))
+    cols_to_convert_name = ["beer_id", "brewery_id"]
+    df_rate_beer_ratings[cols_to_convert_float] = df_rate_beer_ratings[
+        cols_to_convert_float
+    ].apply(pd.to_numeric, errors="coerce")
+    df_rate_beer_ratings[cols_to_convert_str] = df_rate_beer_ratings[
+        cols_to_convert_str
+    ].astype(str)
+    df_rate_beer_ratings[cols_to_convert_name] = (
+        df_rate_beer_ratings[cols_to_convert_name]
+        .astype(str)
+        .apply(lambda x: x.radd("rb_"))
+    )
 
     # Convert the 'date' column to datetime
-    if df_rate_beer_ratings['date'].dtype != 'datetime64[ns]':
-        df_rate_beer_ratings['date'] = pd.to_datetime(pd.to_numeric(df_rate_beer_ratings['date']),unit='s')
+    if df_rate_beer_ratings["date"].dtype != "datetime64[ns]":
+        df_rate_beer_ratings["date"] = pd.to_datetime(
+            pd.to_numeric(df_rate_beer_ratings["date"]), unit="s"
+        )
 
     # Replace the 'beer_id' column with the 'unique_id' column from the 'df_all_beers' DataFrame
-    merged_df = df_rate_beer_ratings.merge(df_all_beers[['rb_beer_id', 'beer_unique_id']], 
-                                           left_on='beer_id', right_on='rb_beer_id', how='left')
+    merged_df = df_rate_beer_ratings.merge(
+        df_all_beers[["rb_beer_id", "beer_unique_id"]],
+        left_on="beer_id",
+        right_on="rb_beer_id",
+        how="left",
+    )
 
     # Replace the 'beer_id' column with the 'unique_id' column
-    merged_df['beer_id'] = merged_df['beer_unique_id']
+    merged_df["beer_id"] = merged_df["beer_unique_id"]
 
     # Drop the 'ba_beer_id' and 'unique_id' columns
-    merged_df = merged_df.drop(columns=['rb_beer_id', 'beer_unique_id'])
-    merged_df.dropna(subset=['beer_id','user_id'], inplace=True)
+    merged_df = merged_df.drop(columns=["rb_beer_id", "beer_unique_id"])
+    merged_df.dropna(subset=["beer_id", "user_id"], inplace=True)
     return merged_df
+
 
 def clean_rb_beers(df_rate_beer_beers):
     """Clean the rate beer beers dataset
@@ -83,18 +103,25 @@ def clean_rb_beers(df_rate_beer_beers):
     Returns:
         df_rate_beer_beers (DataFrame): DataFrame containing the cleaned rate beer beers dataset
     """
-    #rename columns
-    df_rate_beer_beers = df_rate_beer_beers.add_prefix('rb_')
+    # rename columns
+    df_rate_beer_beers = df_rate_beer_beers.add_prefix("rb_")
 
     # Convert id columns to obtain unique id
-    cols_to_convert_name = ['rb_beer_id','rb_brewery_id']
-    df_rate_beer_beers[cols_to_convert_name] = df_rate_beer_beers[cols_to_convert_name].astype(str).apply(lambda x: x.radd('rb_'))   
-   
+    cols_to_convert_name = ["rb_beer_id", "rb_brewery_id"]
+    df_rate_beer_beers[cols_to_convert_name] = (
+        df_rate_beer_beers[cols_to_convert_name]
+        .astype(str)
+        .apply(lambda x: x.radd("rb_"))
+    )
+
     # Drop duplicates
-    df_rate_beer_beers.dropna(subset=['rb_beer_id','rb_brewery_id'],inplace=True)
-    df_rate_beer_beers.drop_duplicates(subset=['rb_beer_id','rb_brewery_id'],inplace=True)
-     
+    df_rate_beer_beers.dropna(subset=["rb_beer_id", "rb_brewery_id"], inplace=True)
+    df_rate_beer_beers.drop_duplicates(
+        subset=["rb_beer_id", "rb_brewery_id"], inplace=True
+    )
+
     return df_rate_beer_beers
+
 
 def clean_rb_reviews(df_rate_beer_reviews):
     """Clean the advocate reviews dataset
@@ -104,31 +131,34 @@ def clean_rb_reviews(df_rate_beer_reviews):
         df_advocate_reviews (DataFrame): DataFrame containing the cleaned advocate reviews dataset
     """
 
-    #Drop rowa where text, user_id or date is missing
-    df_rate_beer_reviews.dropna(subset=['text','user_id','date'], inplace=True)
+    # Drop rowa where text, user_id or date is missing
+    df_rate_beer_reviews.dropna(subset=["text", "user_id", "date"], inplace=True)
 
     # Type conversion
     cols_of_interest = [
-        'date',
-        'user_id',
-        'user_name',
-        'text',
+        "date",
+        "user_id",
+        "user_name",
+        "text",
     ]
-    cols_to_convert_str = [
-        'text',
-        'user_name'
-    ]
-    cols_to_convert_int = [
-        'user_id'
-    ]
+    cols_to_convert_str = ["text", "user_name"]
+    cols_to_convert_int = ["user_id"]
     # Keep columns of interest and convert types
-    df_rate_beer_reviews= df_rate_beer_reviews[cols_of_interest]
-    
-    df_rate_beer_reviews[cols_to_convert_str] = df_rate_beer_reviews[cols_to_convert_str].astype(str)
-    df_rate_beer_reviews[cols_to_convert_int] = df_rate_beer_reviews[cols_to_convert_int].astype(int) 
-    df_rate_beer_reviews['date'] = pd.to_datetime(pd.to_numeric(df_rate_beer_reviews['date']),unit='s')
+    df_rate_beer_reviews = df_rate_beer_reviews[cols_of_interest]
+
+    df_rate_beer_reviews[cols_to_convert_str] = df_rate_beer_reviews[
+        cols_to_convert_str
+    ].astype(str)
+    df_rate_beer_reviews[cols_to_convert_int] = df_rate_beer_reviews[
+        cols_to_convert_int
+    ].astype(int)
+    df_rate_beer_reviews["date"] = pd.to_datetime(
+        pd.to_numeric(df_rate_beer_reviews["date"]), unit="s"
+    )
 
     # Correct wrong character
-    df_rate_beer_reviews['text'] = df_rate_beer_reviews['text'].apply(lambda x: fix_text(x))
-    
+    df_rate_beer_reviews["text"] = df_rate_beer_reviews["text"].apply(
+        lambda x: fix_text(x)
+    )
+
     return df_rate_beer_reviews
