@@ -91,50 +91,50 @@ In order to use the code efficiently, the following structure is recommended:
 ```
 
 ## Research 
-1. Are there significant differences in the main ratings between experts and non-experts ? \
-   a) Do experts and non-experts exhibit preferences for specific beer styles ? \
-   b) Is the distribution of ratings similar between expert and casual users ?
-2. Do high volume reviewers have an outside impact on ratings on certain beer ?
-3.  Regarding the reviews made by the two classes, do experts and casuals raters use the same vocabulary ? And is the sentiment equal for the two classes ?
+1. Are there significant differences in the main ratings between experts and non-experts?
+   - Do experts and non-experts exhibit preferences for specific beer styles?
+   - Is the distribution of ratings similar between expert and casual users?
+2. Do high-volume reviewers have an outside impact on ratings on certain beers?
+3. Regarding the reviews made by the two classes, do experts and casual raters use the same vocabulary? And is the sentiment equal for the two classes?
    
 ## Methods
 ### Step 1: Data-Loading and Filtering
 * Convert first the ``.txt`` files into ``.csv`` for readability.
 * Convert and store all files into pickle format to compress data.
-* Remove duplicate IDs in user DataFrame.
-* Remove rows where beer IDs, user IDs and rating are missing.
-* Merge the two Dataset BeerAdvocate and RatedBeer together. As there are users on both platforms, it is more relevant to take into account the ratings from both platforms for the definition of “experts”.
-### Step 2: Inital Analyses
-After looking at the distribution of ratings, it is legit to separate users in two classes.
+* Remove duplicate IDs in the user DataFrame.
+* Remove rows where beer IDs, user IDs, and rating are missing.
+* Merge the two Datasets BeerAdvocate and RatedBeer together. As there are users on both platforms, it is more relevant to take into account the ratings from both platforms for the definition of “experts”.
+### Step 2: Initial Analyses
+After looking at the distribution of ratings, it is legit to separate users into two classes.
 * Define who is a massive rater\
- In order to separate people in two groups, a definition of a massive rater, called from now an "expert" has to be found. The choice was made here to consider the number of ratings per year and aggregate scores from the past 3 years with the formula:
+ In order to separate people into two groups, a definition of a massive rater, called from now an "expert" has to be found. The choice was made here to consider the number of ratings per year and aggregate scores from the past 3 years with the formula:
 $S_{Y_j} = 2 * R_{Y_{j}} + 0.5 * R_{Y_{j-1}} + 0.25 * R_{Y_{j-2}} + 0.1 * R_{Y_{j-3}}$
 , where $R_{Y_j}$ denotes the number of ratings for the year j and $S_{Y_j}$ is the score of the user for the year j.
-* The experts are then people from the 0.995 quantile of the score calculate previously (among those who have a non-zero score i.e active users).
-* Hence, merging the datasets was necessary, as a user may have done only few ratings on a platform but a lot on the other one. As we want to consider him an expert regardless of a platform, taking into account the number of ratings on both platforms is necessary.
+* The experts are then people from the 0.995 quantile of the score calculated previously (among those who have a non-zero score, i.e., active users).
+* Hence, merging the datasets was necessary, as a user may have done only a few ratings on a platform but a lot on the other one. As we want to consider him an expert regardless of a platform, taking into account the number of ratings on both platforms is necessary.
 * Analyzing the distribution of ratings over the years made by an expert and non-expert.
 ### Step 3: Rating analysis
-* Analysis of the behavior of the two categories,The purpose of this section is to analyze if the experts are more severe than the rest of the population on the global rating (column 'rating' in the DataFrame).
+* Analysis of the behavior of the two categories, The purpose of this section is to analyze if the experts are more severe than the rest of the population on the global rating (column 'rating' in the DataFrame).
 * Focus on whether experts and the general population share similar preferences when it comes to rating beers. For this investigation, the beers are sorted based on the number of times they were rated. A comparison is then made between the top 10 beers for the two groups.
-* See what kind (in terms of popularity)of beer casuals and expert rate.
-* Analysis on the beers styles rated by experts and casuals.
-* Analysis on how their ratings differentiate (values of the ratings).
+* See what kind (in terms of popularity) of beer casuals and experts rate.
+* Analysis of the beers styles rated by experts and casuals.
+* Analysis of how their ratings differentiate (values of the ratings).
 * Analysis of the ratings for specific beers.
 * Ratings at the beginning of a beer (time evolution analysis).
-* Evolution of ratings over time, impact of the experts (bis). \
-  Try to find beers which have been rated by expert and non experts at different years in order to identify if an expert tends to influence the ratings or not
-(all the results of the analysis are in the notebook).
+* Evolution of ratings over time, impact of the experts (bis).
+  Try to find beers which have been rated by experts and non-experts at different years to identify if an expert tends to influence the ratings or not (all the results of the analysis are in the notebook).
 * Impact of experts at the beginning of a beer
 ### Step 4: Textual analysis
 * Compare the length of the reviews done for both classes.
-* Using TF-IDF aproach, compare the most common words an adjectives used by the two classes.
+* Using the TF-IDF approach, compare the most common words and adjectives used by the two classes.
 * Compare the sentiment of the two reviews.
 ## Timeline:
-* 11/24: Evolution of ratings over time, impact of the experts, continue analysis on low rated beers.
-* 11/24 : Analyze reviews (words) used by an expert and casual.
-* 12/05 : Sentiment analysis
-* 12/12: Interactive plots for rating differences and ratings count for top16 most rated beers.
-* 12/15 : Website page with the data story.
+* 11/24: Evolution of ratings over time, impact of the experts, continue analysis on low-rated beers.
+* 11/24: Analyze reviews (words) used by an expert and casual.
+* 12/05: Sentiment analysis
+* 12/12: Interactive plots for rating differences and ratings count for the top 16 most rated beers.
+* 12/15: Website page with the data story.
+
 ## Organization within the team
 * Vincent Roduit :  Data processing, textual analysis
 * Vincent Roh : Ratings analysis and Webstite
