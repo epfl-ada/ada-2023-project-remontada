@@ -39,7 +39,7 @@ def create_text_dataset(df_advocate_reviews,df_rate_beer_reviews, df_all_users,e
         ratings_stats (dataframe): dataframe of rating statistic of all users
     """
     path = '../data/processed/'
-    file = 'df_text_stats.pkl'
+    file = 'df_texts.pkl'
     if os.path.exists(path+file):
         print('Loading the dataframe in pickle format from ',path)
         ratings_stats = load_pickle(path+file)
