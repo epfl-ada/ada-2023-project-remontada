@@ -20,7 +20,7 @@ link to the website: https://larouyan.github.io
 - [Research](#research)
 - [Methods](#methods)
 - [Timeline](#timeline)
-- [Organization within the team](organization-within-the-team)
+- [Organization within the team](#organization-within-the-team)
 - [Contributors](#contributors)
 
 ## Abstract
