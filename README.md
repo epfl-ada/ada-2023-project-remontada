@@ -9,7 +9,8 @@ Ecole Polytechnique Fédérale de Lausanne
 CS-401: Applied Data Analysis
 </div> 
 
-# Find a catchy title
+# 🍺 A journey into expertise
+link to the website: https://larouyan.github.io
 
 ## Table of Contents
 
