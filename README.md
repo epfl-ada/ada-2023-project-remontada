@@ -10,6 +10,7 @@ CS-401: Applied Data Analysis
 </div> 
 
 # 🍺 A journey into expertise
+link to the website: https://larouyan.github.io
 
 ## Table of Contents
 
