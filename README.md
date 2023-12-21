@@ -9,7 +9,7 @@ Ecole Polytechnique Fédérale de Lausanne
 CS-401: Applied Data Analysis
 </div> 
 
-# 🍺 A journey into expertise 🍺
+# 🍺 A journey into expertise
 
 ## Table of Contents
 
