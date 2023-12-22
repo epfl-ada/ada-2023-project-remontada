@@ -51,7 +51,7 @@ There are two types of users: extensive and occasional raters. It is reasonable 
     ├── learning_attitudes.pdf
     └── logo-epfl.png
 ```
-The folder *code* contains all the files that produce the plots presented on the website. The Jupyter notebook **main.ipynb** summarizes all the steps that lead to the analysis.
+The folder *code* contains all the files that produce the plots presented on the website. The Jupyter notebook **code/main.ipynb** summarizes all the steps that lead to the analysis.
 
 ## Data Structure
 In order to use the code efficiently, the following structure is recommended:
