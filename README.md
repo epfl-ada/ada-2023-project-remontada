@@ -105,6 +105,8 @@ In order to use the code efficiently, the following structure is recommended:
 * Remove duplicate IDs in the user DataFrame.
 * Remove rows where beer IDs, user IDs, and rating are missing.
 * Merge the two Datasets BeerAdvocate and RatedBeer together. As there are users on both platforms, it is more relevant to take into account the ratings from both platforms for the definition of “experts”.
+* Remove reviews in other langage than english
+* Use the same number of reviews for bith groups
 ### Step 2: Initial Analyses
 After looking at the distribution of ratings, it is legit to separate users into two classes. The following steps are then performed
 * Define who is a massive rater\
